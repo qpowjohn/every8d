@@ -43,11 +43,15 @@ while True:
             "MSG": content
         }
         response = requests.post(url, data=data)
-        batch_id = response.text
-
+        result = response.text
+        batch_id = result.split(",")[-1] # get guid
+        
         # Update the BatchID in the SMSLog table
         sql = "UPDATE SMSLog SET BatchID = %s WHERE SN = %s"
         val = (batch_id, sn)
         cursor.execute(sql, val)
         db.commit()
         time.sleep(1)
+
+    # waiting for 30 second every loop, not too fast, maybe trigger 429 too many connetion.
+    time.sleep(30)

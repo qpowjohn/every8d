@@ -2,6 +2,7 @@ import requests
 import mysql.connector
 import time
 import argparse
+import json
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-u", "--uid", type=str, required=True, help="Every8D平台帳號")
@@ -38,10 +39,14 @@ while True:
         data = {
             "UID": uid,
             "PWD": pwd,
-            "BID": batch_id
+            "BID": batch_id,
+            "RESPFORMAT": "1"
         }
+
         response = requests.post(url, data=data)
-        status = response.text
+        result = response.text
+        data = json.loads(result)["DATA"][0] # 取出DATA元素
+        status = data["STATUS"]
 
         # Update the Status in the SMSLog table
         sql = "UPDATE SMSLog SET Status = %s WHERE SN = %s"
