@@ -1,3 +1,13 @@
+# 環境設置
+
+if using MySQL 8
+
+```
+pip3 uninstall mysql-connector
+pip3 install mysql-connector-python
+
+```
+
 # 如何使用
 
 利用mysql，建立一Database，命名為smsdb，執行以下語法加入TABLE
