@@ -12,19 +12,19 @@ args = parser.parse_args()
 uid = args.uid
 pwd = args.pwd
 
-# Connect to the database
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="password",
-    database="smsdb"
-)
-
-# Create a cursor object
-cursor = db.cursor()
-
 # Loop through the SMSLog table
 while True:
+    # Connect to the database
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="password",
+        database="smsdb"
+    )
+
+    # Create a cursor object
+    cursor = db.cursor()
+
     # Select the records that have no BatchID
     sql = "SELECT SN, mobile, Content FROM SMSLog WHERE BatchID IS NULL"
     cursor.execute(sql)
@@ -35,6 +35,7 @@ while True:
         sn = record[0]
         mobile = record[1]
         content = record[2]
+        print ("Get Data, DEST: " + mobile + " MSG: " + content)
         url = "https://api.e8d.tw/API21/HTTP/sendSMS.ashx"
         data = {
             "UID": uid,
@@ -52,6 +53,6 @@ while True:
         cursor.execute(sql, val)
         db.commit()
         time.sleep(1)
-
+    
     # waiting for 30 second every loop, not too fast, maybe trigger 429 too many connetion.
     time.sleep(30)
